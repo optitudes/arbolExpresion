@@ -66,18 +66,33 @@ public class NodeTree {
 	/*
 	 * metodo para insertar un elemento en el arbol de manera recursiva
 	 */
-	public void insertar(String valueAux){
-		if(this.nodeLeft==null){this.nodeLeft=new NodeTree(valueAux);}
+	public void insertar(NodeTree nodeAux) {
+
+		if(nodeLeft==null){nodeLeft=nodeAux;}
 		else{
-			if(nodeLeft.isOperator()){nodeLeft.insertar(valueAux);}
+			if(nodeLeft.verifyConditions()){nodeLeft.insertar(nodeAux);}
 			else{
-				if(this.nodeRight==null){this.nodeRight=new NodeTree(valueAux);}
-				else{if(nodeRight.isOperator()){nodeRight.insertar(valueAux);}
-				}
+				if(nodeRight==null){nodeRight=nodeAux;}
+				else{if(nodeRight.verifyConditions()){nodeRight.insertar(nodeAux);}}
 			}
 		}
 	}
 
+	/*
+	 * método que verifica las condiciones para insertar un nuevo nodo
+	 */
+	private boolean verifyConditions() {
+		if(isOperator()){
+			if(nodeLeft==null || nodeRight==null)
+					return true;
+		}
+		return false;
+	}
+
+
+	/*
+	 * metodo que valida si el valor de este nodo es un operador
+	 */
 	private boolean isOperator() {
 		if(this.value.length()>1)
 			return false;
@@ -98,23 +113,7 @@ public class NodeTree {
 		if(nodeRight!=null)
 			nodeRight.showPreorder();
 	}
-	/*
-	 * metodo para validar un valor
-	 */
-//	public boolean valValue(V valueAux) {
-//		if(value.compareTo(valueAux)==0)		
-//			return true;
-//		return false;
-//	}
-//	/*
-//	 * metodo que verifica si el valor que entra como parametro es hijo de este nodo
-//	 */
-//	public boolean contains(V valueAux) {
-//		if(valValue(valueAux)){return true;}
-//		if(nodeLeft!=null){if(nodeLeft.contains(valueAux)){return true;}}
-//		if(nodeRight!=null){if(nodeRight.contains(valueAux)){return true;}}
-//		return false;
-//	}
+
 	/*
 	 * metodo que verifica si el nodo tiene hijos
 	 */
@@ -123,11 +122,11 @@ public class NodeTree {
 			return true;
 		return false;
 	}
-	public void destroy() {
-		
-	}
 
-	public Double getTotal() throws ValueNumberException {
+	/*
+	 * metodo que obtiene el total de la operacion aritmetica
+	 */
+	public Double getTotal() throws ValueNumberException, NullPointerException{
 		if(isOperator()){
 			Double leftNumber=getLeftNumber();
 			Double rightNumber=getRighNumber();
@@ -136,16 +135,19 @@ public class NodeTree {
 		return null;
 	}
 
-	private Double makeOperation(Double leftNumber, Double rightNumber) {
+	private Double makeOperation(Double leftNumber, Double rightNumber) throws ValueNumberException {
 		switch(value.charAt(0)){
 		case '*': return leftNumber*rightNumber;
 		case '/': return leftNumber/rightNumber;
 		case '+': return leftNumber+rightNumber;
 		case '-': return leftNumber+rightNumber;
 		}
-		return null;
+		throw new ValueNumberException("Error al procesar los valores(generar total{method node})");
 	}
 
+	/*
+	 * metodo que obtiene elnúmero de la derecha
+	 */
 	private Double getRighNumber() throws ValueNumberException {
 		if(nodeRight!=null){
 			if(nodeRight.isOperator()){
@@ -158,6 +160,9 @@ public class NodeTree {
 		return null;
 	}
 
+	/*
+	 * metodo que obtiene el numero de la izquierda
+	 */
 	private Double getLeftNumber() throws ValueNumberException {
 		if(nodeLeft!=null){
 			if(nodeLeft.isOperator()){
@@ -171,6 +176,9 @@ public class NodeTree {
 		
 	}
 
+	/*
+	 * metodo que parsea el número
+	 */
 	private Double getValueNumber() throws ValueNumberException {
 			try {
 				double aux2=Double.parseDouble(value);

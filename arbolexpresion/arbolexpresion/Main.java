@@ -15,7 +15,7 @@ public class Main {
 			arbolExpresion.showPreorder();
 			resultado=arbolExpresion.getTotal();
 			JOptionPane.showMessageDialog(null, "resultado :"+resultado);
-		} catch (SintaxError | StackError | ValueNumberException e) {
+		} catch (SintaxError | StackError | ValueNumberException | GenerateNodeException | NullPointerException e) {
 			JOptionPane.showMessageDialog(null, "Error cause :"+e.getCause()+" msm:"+e.getMessage());
 			
 			
